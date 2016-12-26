@@ -2,28 +2,60 @@ package com.org.sdmahapa.excel.entity;
 
 import java.util.Date;
 
+/**
+ * To get a data model for Excel
+ * @author SDMAHAPA
+ *
+ */
 public class ExcelData {
 	private String name;
 	private String description;
 	private double price;
 	private Date date;
 	
-	public ExcelData(){}
+	/**
+	 * No-args constractor
+	 */
+	public ExcelData(){// no args constractor
+		}
 	
+	
+	/**
+	 * Constractor
+	 * @param name
+	 */
 	public ExcelData(String name){
 		this.name = name;
 	}
 	
+	/**
+	 * Constractor
+	 * @param name
+	 * @param description
+	 */
 	public ExcelData(String name, String description){
 		this(name);
 		this.description=description;
 	}
 	
+	/**
+	 * Constractor.
+	 * @param name
+	 * @param description
+	 * @param price
+	 */
 	public ExcelData(String name, String description, double price){
 		this(name, description);
 		this.price=price;
 	}
 	
+	/**
+	 * Constractor
+	 * @param name
+	 * @param description
+	 * @param price
+	 * @param date
+	 */
 	public ExcelData(String name, String description, double price, Date date){
 		this(name, description, price);
 		this.date=date;
