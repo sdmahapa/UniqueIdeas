@@ -2,14 +2,23 @@ package com.org.sdmahapa.excel;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
+
+import com.org.sdmahapa.excel.entity.ExcelData;
+import com.org.sdmahapa.excel.utility.CellStyleHelper;
+import com.org.sdmahapa.excel.utility.ExcelHeaderHelper;
+import com.org.sdmahapa.excel.utility.FileManagementHelper;
 
 
 /**
@@ -20,51 +29,66 @@ import org.apache.poi.ss.usermodel.Row;
 public class WriteToExcel{
 	public static void main(String args[])
 	{
-		@SuppressWarnings("resource")
+		Set<String> keyset = null;
+		int cellnum = 0;
+		int rownum = 1;
+		
 		HSSFWorkbook workbook = new HSSFWorkbook();
 		
 		HSSFSheet sheet = workbook.createSheet("Expanse_Data");
 		
 		//data to be filled.
 		
-		Map<String, Object[]> data = new HashMap<String, Object[]>();
-		data.put("1", new Object[] {"Name", "Description", "Amount"});
-		data.put("2", new Object[] {"Flat_Rent", "KMS Residency Rent", "6500"});
-		data.put("3", new Object[] {"Cook", "Cooking aunty", "1200"});
-		data.put("4", new Object[] {"Bike_EMI", "Tata Capital for loan", "5000"});
-		data.put("5", new Object[] {"Mobile Bill", "VodafonePostpaid", "1200"});
+		//Only for header
+		ExcelHeaderHelper.setTheHeader(workbook, sheet, "Name", "Description", "Amount", "TimeStamp");
 		
-		Set<String> keyset = data.keySet();
-		int rownum = 0;
+		//data
+		Map<String, ExcelData> data = new HashMap<String, ExcelData>();
+		ExcelData ed = new ExcelData();
+		ed.setName("Bike EMI");
+		ed.setDescription("Royal Enfield bike, every month needs to pay the load amount");
+		ed.setPrice(5000.00);
+		ed.setDate(new Date());
+		data.put("2", ed);
+		
+		
+		keyset = data.keySet();
+		
 		
 		for (String key : keyset)
 		{
 			Row row = sheet.createRow(rownum++);
-			Object[] objarr = data.get(key);
-			int cellnum = 0;
+			ExcelData dataArr = data.get(key);
 			
-			for(Object obj : objarr)
-			{
+			Object [] objArr = {dataArr.getName(), dataArr.getDescription(), dataArr.getPrice(), dataArr.getDate().toString()};
+            cellnum = 0;
+            for (Object obj : objArr)
+            {
+				
 				Cell cell = row.createCell(cellnum++);
-				if (obj instanceof String)
+				CellStyle styleHeading = workbook.createCellStyle();
+				if (obj instanceof String){
+					CellStyleHelper.setCellStyles(styleHeading, CellStyle.ALIGN_CENTER, CellStyle.VERTICAL_CENTER, CellStyle.BORDER_DOUBLE, CellStyle.BORDER_DOUBLE, CellStyle.BORDER_DOUBLE, CellStyle.BORDER_DOUBLE, true);
+					cell.setCellStyle(styleHeading);
 					cell.setCellValue((String)obj);
-				else if (obj instanceof Integer)
-					cell.setCellValue((Integer)obj);
+				}
+				else if (obj instanceof Double){
+					CellStyleHelper.setCellStyles(styleHeading, CellStyle.ALIGN_CENTER, CellStyle.VERTICAL_CENTER, CellStyle.BORDER_DOUBLE, CellStyle.BORDER_DOUBLE, CellStyle.BORDER_DOUBLE, CellStyle.BORDER_DOUBLE, false);
+					cell.setCellStyle(styleHeading);
+					cell.setCellValue((Double)obj);
+				}
 				else
-					throw new IllegalArgumentException("Type Cast Exception!!!! It's only support String and Integer");
-			}
+					throw new IllegalArgumentException("Type Cast Exception!!!! It's only support String, Double");
+            }
+            
+            //for (int i=0; i<cellnum; i++)
+            	//sheet.autoSizeColumn(cellnum);
+			
 		}
 		try
 		{
-			FileOutputStream out = new FileOutputStream(new File("C:\\Users\\SDMAHAPA\\workspace\\EXCELREADER\\Expanse_sheet.xls"));
-			workbook.write(out);
-			out.close();
-			System.out.println("Expanse_sheet.xlsx written successfully on disk!");
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-			System.out.println("IOException::"+e);
+			FileManagementHelper.WriteToTheExcel(workbook);
+			System.out.println("Report.xlsx written successfully on disk! Please find in following path");
 		}
 		catch(Exception e)
 		{
