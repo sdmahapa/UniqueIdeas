@@ -7,6 +7,29 @@ public class ExcelData {
 	private String description;
 	private double price;
 	private Date date;
+	
+	public ExcelData(){}
+	
+	public ExcelData(String name){
+		this.name = name;
+	}
+	
+	public ExcelData(String name, String description){
+		this(name);
+		this.description=description;
+	}
+	
+	public ExcelData(String name, String description, double price){
+		this(name, description);
+		this.price=price;
+	}
+	
+	public ExcelData(String name, String description, double price, Date date){
+		this(name, description, price);
+		this.date=date;
+	}
+	
+	
 	public String getName() {
 		return name;
 	}
