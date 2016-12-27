@@ -1,5 +1,6 @@
 package com.org.sdmahapa.excel.utility;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -47,17 +48,16 @@ public class ExcelDataManagement {
 					}
 					else if (obj instanceof Double){
 						CellStyleHelper.setCellStyles(styleHeading, CellStyle.ALIGN_CENTER, CellStyle.VERTICAL_CENTER, CellStyle.BORDER_DOUBLE, CellStyle.BORDER_DOUBLE, CellStyle.BORDER_DOUBLE, CellStyle.BORDER_DOUBLE, false);
-						HSSFDataFormat sdf = workbook.createDataFormat();
-						styleHeading.setDataFormat(sdf.getFormat("$#,##0.00"));
+						String format = String.valueOf((Double)obj*1.0f);
 						cell.setCellStyle(styleHeading);
-						cell.setCellValue((Double)obj);
+						cell.setCellValue(format);
 					}
 					else if (obj instanceof Date){
 						CellStyleHelper.setCellStyles(styleHeading, CellStyle.ALIGN_CENTER, CellStyle.VERTICAL_CENTER, CellStyle.BORDER_DOUBLE, CellStyle.BORDER_DOUBLE, CellStyle.BORDER_DOUBLE, CellStyle.BORDER_DOUBLE, true);
-						HSSFDataFormat sdf = workbook.createDataFormat();
-						styleHeading.setDataFormat(sdf.getFormat("dd/mm/yyyy hh:MM"));
+						SimpleDateFormat sdf = new SimpleDateFormat("dd/mm/yyyy hh:MM:ssss");
+						String format = sdf.format((Date)obj);
 						cell.setCellStyle(styleHeading);
-						cell.setCellValue((Date)obj);
+						cell.setCellValue(format);
 					}
 					else
 						throw new IllegalArgumentException("Type Cast Exception!!!! It's only support String, Double");
